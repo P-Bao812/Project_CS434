@@ -36,6 +36,21 @@ class TaikhoanController extends Controller
         $user->save();
         return response()->json(['status' => 1, 'message' => 'Cập nhật trạng thái thành công'], 200);
     }
+    public function delete(Request $request, $id)
+    {
+        $user = Taikhoan::find($id);
+        if (!$user) {
+            return response()->json([
+                'status'  => 0,
+                'message' => 'Không tìm thấy tài khoản'
+            ], 404);
+        }
+        $user->delete();
+        return response()->json([
+            'status'  => 1,
+            'message' => 'Xóa đơn tài khoản thành công'
+        ], 200);
+    }
     public function login(TaiKhoanLoginRequest $request)
     {
         $user = Auth::guard('taikhoan')->attempt(
@@ -84,5 +99,10 @@ class TaikhoanController extends Controller
         } else {
             return response()->json(['status' => 0, 'message' => 'Đăng xuất thất bại'], 401);
         }
+    }
+
+    public function signUp(TaiKhoanCreateRequest $request)
+    {
+        return $this->create($request);
     }
 }
