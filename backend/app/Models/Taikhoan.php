@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Database\Factories\UserFactory;
+use Illuminate\Notifications\Notifiable;
 
-class Taikhoan extends Model
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+
+class Taikhoan extends Authenticatable
 {
+    use Notifiable, HasApiTokens;
+
     protected $table = 'taikhoans';
     protected $fillable = [
         'emaildangnhap',
         'manguoidung',
-        'matkhau',
+        'password',
         'trangthai',
-        'landangnhapcuoi',
-        'ngaytao',  
+        'lannhapcuoi',
     ];
 }

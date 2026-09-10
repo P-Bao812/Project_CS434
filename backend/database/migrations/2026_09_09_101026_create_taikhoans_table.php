@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('taikhoans', function (Blueprint $table) {
             $table->id();
-            $table->string('emaildangnhap')->unique();
+            $table->string('emaildangnhap', 255)->unique();
             $table->integer('manguoidung');
-            $table->string('matkhau');
+            $table->string('password');
             $table->integer('trangthai')->default(0)->comment('0:Hoạt động, 1:Khóa');
-            $table->datetimes('landangnhapcuoi')->nullable();
-            $table->datetimes('ngaytao');
+            $table->dateTime('lannhapcuoi');
             $table->timestamps();
         });
     }

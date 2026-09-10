@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('macamxuc');
             $table->integer('mamonan');
-            $table->integer('mucdophuhop');
-            $table->integer('ghichu', 100)->nullable();
+            $table->integer('mucdophuhop')->default(0);
+            $table->string('ghichu', 100)->nullable();
             $table->timestamps();
         });
     }

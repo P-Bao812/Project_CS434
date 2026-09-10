@@ -10,7 +10,7 @@ class NguoiDung extends Model
     protected $fillable = [
         'hoten',
         'tenhienthi',
-        'goithieungan',
+        'gioithieungan',
         'emaillienhe',
         'sodienthoai',
         'ngaysinh',
