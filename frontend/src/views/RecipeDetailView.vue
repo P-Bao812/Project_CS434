@@ -123,10 +123,11 @@ const userRating = ref(0)
 const userReviewText = ref('')
 
 onMounted(async () => {
-  // Simulate fetching
-  await new Promise(r => setTimeout(r, 500))
+  if (recipeStore.recipes.length === 0) {
+    await recipeStore.fetchRecipes()
+  }
   const id = route.params.id
-  recipe.value = recipeStore.recipes.find(r => r.id === id)
+  recipe.value = recipeStore.recipes.find(r => String(r.id) === String(id))
   loading.value = false
 })
 

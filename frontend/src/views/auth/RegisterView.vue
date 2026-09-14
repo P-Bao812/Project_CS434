@@ -44,6 +44,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import CCard from '@/components/common/CCard.vue'
 import CInput from '@/components/common/CInput.vue'
@@ -68,20 +69,41 @@ const handleRegister = async () => {
   if (Object.keys(errors.value).length > 0) return
 
   loading.value = true
-  
-  // Simulate API delay
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
-  
-  // Basic mock register & login
-  authStore.login({
-    id: 'user_new',
-    name: name.value,
-    email: email.value,
-    role: 'member'
-  })
-  
-  router.push('/')
+
+  try {
+    const nguoiDungRes = await axios.post('http://127.0.0.1:8000/api/nguoi-dung/create', {
+  hoten: name.value,
+  tenhienthi: name.value,
+  gioithieungan: 'Chưa cập nhật',
+  emaillienhe: email.value,
+  sodienthoai: '0000000000',
+  ngaysinh: '2000-01-01',
+  diachi: 'Chưa cập nhật',
+  anhdaidien: 'default.png'
+})
+
+    const nguoiDungId = nguoiDungRes.data.data.id;
+
+    const now = new Date()
+    const pad = (n) => String(n).padStart(2, '0')
+    const lannhapcuoi = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+
+    const taiKhoanRes = await axios.post('http://127.0.0.1:8000/api/sign-up', {
+      emaildangnhap: email.value,
+      manguoidung: nguoiDungId,
+      password: password.value,
+      trangthai: 1,
+      lannhapcuoi: lannhapcuoi
+    })
+
+    authStore.login(taiKhoanRes.data.data.user, taiKhoanRes.data.data.token)
+    router.push('/')
+  } catch (error) {
+    console.error(error.response?.data || error)
+    errors.value.email = 'Đăng ký thất bại, vui lòng thử lại'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

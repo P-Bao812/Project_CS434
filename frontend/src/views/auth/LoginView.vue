@@ -44,6 +44,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import CCard from '@/components/common/CCard.vue'
 import CInput from '@/components/common/CInput.vue'
@@ -59,33 +60,28 @@ const loading = ref(false)
 
 const handleLogin = async () => {
   errors.value = {}
-  
+
   if (!email.value) errors.value.email = 'Vui lòng nhập email'
   if (!password.value) errors.value.password = 'Vui lòng nhập mật khẩu'
-  
+
   if (Object.keys(errors.value).length > 0) return
 
   loading.value = true
-  
-  // Simulate API delay
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
-  
-  // Basic mock login
-  authStore.login({
-    id: 'user123',
-    name: 'Nguyễn Văn A',
-    email: email.value,
-    role: email.value.includes('admin') ? 'admin' : 'member'
-  })
-  
-  router.push(authStore.isAdmin ? '/admin' : '/')
-}
 
-const mockLogin = (role) => {
-  email.value = `${role}@cookmate.vn`
-  password.value = 'password'
-  handleLogin()
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/login', {
+      emaildangnhap: email.value,
+      password: password.value
+    })
+
+    authStore.login(response.data.user, response.data.token)
+    router.push(authStore.isAdmin ? '/admin' : '/')
+  } catch (error) {
+    errors.value.password = 'Email hoặc mật khẩu không đúng'
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

@@ -92,7 +92,9 @@ const currentIngredient = ref('')
 const ingredients = ref([...recipeStore.searchIngredients])
 const results = ref([])
 
-onMounted(() => {
+onMounted(async () => {
+  await recipeStore.fetchRecipes()
+  
   if (keyword.value) {
     searchType.value = 'keyword'
     performSearch()
@@ -103,7 +105,6 @@ onMounted(() => {
     results.value = recipeStore.recipes
   }
 })
-
 const addIngredient = () => {
   if (currentIngredient.value.trim() && !ingredients.value.includes(currentIngredient.value.trim())) {
     ingredients.value.push(currentIngredient.value.trim())
